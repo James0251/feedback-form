@@ -1,5 +1,3 @@
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,7 +14,7 @@
 
 </head>
 <body>
-<form action="calendar.php" method="POST">
+<form action="form.php" method="POST">
     <table>
         <tr>
             <th class="name">Ваше имя:</th> <td class="point"><input type="text" name="name" size="35"> </td>
@@ -60,7 +58,7 @@
             <th class="name">Выберите время приёма:</th> <td class="point"><input type="text" name="timepicker" id="time"></td>
         </tr>
         <tr>
-            <td class="send" colspan=2 align="left"> <input type="reset" value="очистить форму"><input type="submit" value="отправить">
+            <td class="send" colspan=2 align="left"> <input type="reset" value="Очистить"><input type="submit" value="Отправить">
             </td></tr>
     </table>
 </form>
@@ -127,19 +125,58 @@
 </script>
 
 <?php
-//if(isset($_POST['name']) && !empty($_POST['name']) && isset($_POST['phone']) && !empty($_POST['phone']) && isset($_POST['website']) && !empty($_POST['website']) && isset($_POST['message']) && !empty($_POST['message']) && isset($_POST['priority']) && !empty($_POST['priority']) && isset($_POST['type']) && !empty($_POST['type']) && isset($_POST['date']) && !empty($_POST['date']) && isset($_POST['timepicker']) && !empty($_POST['timepicker'])) {
-//    echo "Name: ".$_POST['name']."<br>";
-//    echo "Phone: ".$_POST['phone']."<br>";
-//    echo "Checkbox: ".$_POST['call']."<br>";
-//    echo "Email: ".$_POST['website']."<br>";
-//    echo "Spec: ".$_POST['priority']."<br>";
-//    echo "Service: ".$_POST['type']."<br>";
-//    echo "Textarea: ".$_POST['message']."<br>";
-//    echo "Date: ".$_POST['date']."<br>";
-//    echo "Time: ".$_POST['timepicker']."<br>";
+
+//$submit = $_POST['submit'];
+// && isset($_POST['phone']) && !empty($_POST['phone']) && isset($_POST['call']) && !empty($_POST['call']) && isset($_POST['website']) && !empty($_POST['website']) && isset($_POST['priority']) && !empty($_POST['priority']) && isset($_POST['type']) && !empty($_POST['type']) && isset($_POST['message']) && !empty($_POST['message']) && isset($_POST['date']) && !empty($_POST['date']) && isset($_POST['timepicker']) && !empty($_POST['timepicker'])) {
+if(isset($_POST['name']) && !empty($_POST['name'])){$name = $_POST['name'];}
+if(isset($_POST['phone']) && !empty($_POST['phone'])){$phone = $_POST['phone'];}
+if(isset($_POST['call']) && !empty($_POST['call'])){$call = $_POST['call'];}
+if(isset($_POST['website']) && !empty($_POST['website'])){$email = $_POST['website'];}
+if(isset($_POST['priority']) && !empty($_POST['priority'])){$specialist = $_POST['priority'];}
+if(isset($_POST['type']) && !empty($_POST['type'])){$service = $_POST['type'];}
+if(isset($_POST['message']) && !empty($_POST['message'])){$message = $_POST['message'];}
+if(isset($_POST['date']) && !empty($_POST['date'])){$date = $_POST['date'];}
+if(isset($_POST['timepicker']) && !empty($_POST['timepicker'])){$time = $_POST['timepicker'];}
 //}
-//?>
-<?php
+echo "$name <br/>"; echo "$phone <br/>"; echo "$call <br/>"; echo "$email <br/>"; echo "$specialist <br/>"; echo "$service <br/>"; echo "$message <br/>"; echo "$date <br/>"; echo "$time <br/>"; //всё хорошо
+
+
+$mysqli = @new mysqli('localhost', 'root', '0000', 'feedback_form');
+//if ($mysqli) {echo 'MySQL was connected';}else{echo 'MySQL was not connected';} // MySQL was connected
+
+//mysqli_query("SET NAMES 'utf-8");
+//mysqli_query("SET CHARACTER SET 'utf-8'");
+
+$sql = "CREATE TABLE IF NOT EXISTS `feedbackValue` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(30) NOT NULL UNIQUE,
+  `coll` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `specialist` VARCHAR(255) NOT NULL,
+  `service` VARCHAR(255) NOT NULL,
+  `message` VARCHAR(255) NOT NULL,
+  `data` DATE NOT NULL,
+  `time` TIME NOT NULL,
+  `creation_date` TIMESTAMP
+)  CHARACTER SET utf8 COLLATE utf8_bin";
+
+//if ($mysqli->query($sql) == true){echo "yes";}else{echo "no";}
+
+$mysqli->query('SET NAMES utf8');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    $insert = $mysqli->query("INSERT INTO feedbackValue(`name`, `phone`, `coll`, `email`, `specialist`, `service`, `message`, `data`, `time`) VALUES(\"$name\",\"$phone\",\"$call\",\"$email\",\"$specialist\",\"$service\",\"$message\",\"$date\",\"$time\")");
+
+//    if($insert){
+//        print 'Success! Total ' .$mysqli->affected_rows .' rows added.<br />';
+//    }else{
+//        die('Error : ('. $mysqli->errno .') '. $mysqli->error);
+//    }
+}
+
+$mysqli->close();
+
 $to = "den4643@yandex.ru"; // емайл получателя данных из формы
 $tema = "Форма обратной связи на PHP"; // тема полученного емайла
 $message = "Ваше имя: ".$_POST['name']."<br>";//присвоить переменной значение, полученное из формы name=name
@@ -154,7 +191,7 @@ $message .= "Время: ".$_POST['timepicker']."<br>"; //полученное �
 $headers = 'MIME-Version: 1.0' . "\r\n"; // заголовок соответствует формату плюс символ перевода строки
 $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n"; // указывает на тип посылаемого контента
 mail($to, $tema, $message, $headers); //отправляет получателю на емайл значения переменных
-?>
+//?>
 
 
 </body>
